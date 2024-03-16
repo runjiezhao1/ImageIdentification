@@ -8,5 +8,5 @@ Labels: airplane, automobile, bird, cat, deer, dog, frog, horse
 Image data are all from CIFAR-10.
 
 ## Basic Model
-The accuracy rate of ```Net``` model in the ```models.py``` is 58%
+The accuracy rate of ```Net``` model in the ```models.py``` is 58%.__
 The accuracy rate of ```ImprovedNet``` model in the ```models.py``` is 64%
