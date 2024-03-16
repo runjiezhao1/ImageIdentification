@@ -9,4 +9,7 @@ Image data are all from CIFAR-10.
 
 ## Basic Model
 The accuracy rate of ```Net``` model in the ```models.py``` is 58%.<br />
-The accuracy rate of ```ImprovedNet``` model in the ```models.py``` is 64%
+The accuracy rate of ```ImprovedNet``` model in the ```models.py``` is 64%.
+
+## Preprocess
+whitening method: xij = (pij - mean) / std \theta

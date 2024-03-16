@@ -1,4 +1,3 @@
-
 import torch
 import torchvision
 import torch.nn as nn
@@ -21,9 +20,12 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 #iterate for 50 times
 for epoch in range(50):
     running_loss = 0.0
+    # i range from 0 to 2000
     for i, data in enumerate(train_data_loader, 0):
+        #input size [128,3,32,32]
         input, labels = data
         #clear the gradient from the previous result
+        print(input.shape[0])
         optimizer.zero_grad()
         outputs = model(input)
         loss = criterion(outputs, labels)
@@ -46,4 +48,4 @@ with torch.no_grad():
 
 print('Accuracy of the network on the 10000 test images: %d %%' % (100 * correct / total))
 
-torch.save(model.state_dict(), "./temp.json")
+#torch.save(model.state_dict(), "./temp.json")
