@@ -1,8 +1,10 @@
 import torch
 import torchvision
+import torchvision.transforms as tfs
 import torch.nn as nn
 import torch.nn.functional as F
 import models
+import dataProcess as dp
 
 train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
 test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
@@ -10,10 +12,17 @@ train_data_loader = torch.utils.data.DataLoader(train_dataset, batch_size=128, s
 test_data_loader = torch.utils.data.DataLoader(test_dataset, batch_size=128, shuffle=False)
 
 #choose the model
-model = models.ImprovedNet()
+model = models.ImprovedNet_Type2()
 
+#train on gpu
+if not torch.cuda.is_available():
+    print('CUDA not available')
+else:
+    print('CUDA available')
 
 torch.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print("Using device: ", torch.device)
+
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
@@ -24,8 +33,10 @@ for epoch in range(50):
     for i, data in enumerate(train_data_loader, 0):
         #input size [128,3,32,32]
         input, labels = data
+        #preprocessing
+        updated_input = dp.image_normalize(input.numpy())
+        input = torch.from_numpy(updated_input)
         #clear the gradient from the previous result
-        print(input.shape[0])
         optimizer.zero_grad()
         outputs = model(input)
         loss = criterion(outputs, labels)
@@ -41,6 +52,9 @@ total = 0
 with torch.no_grad():
     for data in test_data_loader:
         images, labels = data
+        #preprocessing the data
+        updated_input = dp.image_normalize(images.numpy())
+        input = torch.from_numpy(updated_input)
         outputs = model(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)

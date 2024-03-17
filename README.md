@@ -13,4 +13,4 @@ The accuracy rate of ```ImprovedNet``` model in the ```models.py``` is 64%.
 
 ## Preprocess
 whitening method: xij = (pij - mean) / std<br />
-result = (b - a)*(xij - min) / (max - min)
+apply whitening to image: (b - a)*(xij - min) / (max - min)
