@@ -21,6 +21,7 @@ Apply 50 epochs
 
 ## Result
 | Method | Accuracy |
+| -------- | ------ |
 | Net Model | 58% |
 | ImprovedNet Model | 64% |
 | ImprovedNet with image preprocessing | 75% |
