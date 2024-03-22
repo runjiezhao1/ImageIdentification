@@ -12,5 +12,21 @@ The accuracy rate of ```Net``` model in the ```models.py``` is 58%.<br />
 The accuracy rate of ```ImprovedNet``` model in the ```models.py``` is 64%.
 
 ## Preprocess
-whitening method: xij = (pij - mean) / std<br />
-apply whitening to image: (b - a)*(xij - min) / (max - min)
+Data augmentation: random flip and image whitening
+
+## Train Process
+Apply ```CrossEntropyLoss()``` for loss calculation
+Apply ```torch.optim.SGD()``` with learning rate 0.001 for gradient calculation
+Apply 50 epochs
+
+## Result
+| Method | Accuracy |
+| Net Model | 58% |
+| ImprovedNet Model | 64% |
+| ImprovedNet with image preprocessing | 75% |
+
+## Train and Test Loss
+![alt text](./img/loss.png)
+
+## Train and Test Accuracy
+![alt text](./img/accuracy.png)
