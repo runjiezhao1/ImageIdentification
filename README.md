@@ -15,9 +15,9 @@ The accuracy rate of ```ImprovedNet``` model in the ```models.py``` is 64%.
 Data augmentation: random flip and image whitening
 
 ## Train Process
-Apply ```CrossEntropyLoss()``` for loss calculation
-Apply ```torch.optim.SGD()``` with learning rate 0.001 for gradient calculation
-Apply 50 epochs
+Apply ```CrossEntropyLoss()``` for loss calculation. <br />
+Apply ```torch.optim.SGD()``` with learning rate 0.001 for gradient calculation. <br />
+Apply 50 epochs. <br />
 
 ## Result
 | Method | Accuracy |
