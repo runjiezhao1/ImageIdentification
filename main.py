@@ -12,11 +12,13 @@ import numpy as np
 transform_train = transforms.Compose([
     transforms.RandomHorizontalFlip(),
     transforms.RandomGrayscale(),
-    transforms.ToTensor() 
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
 ])
 
 transform_valid = transforms.Compose([
-    transforms.ToTensor() 
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
 ])
 
 train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True, transform=transform_train, download=True)
@@ -28,7 +30,7 @@ test_data_loader = torch.utils.data.DataLoader(test_dataset, batch_size=128, shu
 #size of test dataset is 79 
 
 #choose the model
-model = models.ImprovedNet()
+model = models.ImprovedNet_Typ4()
 
 #train on gpu
 if not torch.cuda.is_available():
@@ -38,9 +40,13 @@ else:
 
 torch.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print("Using device: ", torch.device)
+model = model.to(torch.device)
+
+weight_decay = 1e-4
 
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001, weight_decay=weight_decay, momentum=0.9)
+
 
 #record the history data
 history = []
@@ -55,9 +61,11 @@ for epoch in range(50):
     for i, data in enumerate(train_data_loader, 0):
         #input size [128,3,32,32]
         input, labels = data
+        input = input.to(torch.device)
+        labels = labels.to(torch.device)
         #preprocessing
-        updated_input = dp.image_normalize(input.numpy())
-        input = torch.from_numpy(updated_input)
+        # updated_input = dp.image_normalize(input.numpy())
+        # input = torch.from_numpy(updated_input)
         #clear the gradient from the previous result
         optimizer.zero_grad()
         outputs = model(input)
@@ -82,9 +90,11 @@ for epoch in range(50):
     with torch.no_grad():
         for i, data in enumerate(test_data_loader, 0):
             images, labels = data
+            images = images.to(torch.device)
+            labels = labels.to(torch.device)
             #preprocessing the data
-            updated_input = dp.image_normalize(images.numpy())
-            input = torch.from_numpy(updated_input)
+            # updated_input = dp.image_normalize(images.numpy())
+            # input = torch.from_numpy(updated_input)
             outputs = model(images)
             #get current loss
             loss = criterion(outputs, labels)
