@@ -25,6 +25,7 @@ Apply 50 epochs. <br />
 | Net Model | 58% |
 | ImprovedNet Model | 64% |
 | ImprovedNet with image preprocessing | 75% |
+| ImprovedNet with batch normalization, weight decay and more convolution layers | 84% |
 
 ## Train and Test Loss
 ![alt text](./img/loss.png)
