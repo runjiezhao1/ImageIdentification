@@ -30,7 +30,7 @@ test_data_loader = torch.utils.data.DataLoader(test_dataset, batch_size=128, shu
 #size of test dataset is 79 
 
 #choose the model
-model = models.ImprovedNet_Typ4()
+model = models.ImprovedNet_ResNet(use_res=True)
 
 #train on gpu
 if not torch.cuda.is_available():
@@ -118,14 +118,16 @@ plt.plot(history[:,0:2])
 plt.legend(['Tr Loss', 'Val Loss'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Loss')
+plt.title('Loss vs. Epoch')
 #Plot the accuracy rate
 plt.figure(figsize=(10, 10))
 plt.plot(history[:,2:4])
 plt.legend(['Tr Accur', 'Val Accur'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Accuracy rate')
+plt.title('Accuracy rate vs. Epoch')
 plt.show()
 
-torch.save(model.state_dict(), "./temp.json")
+torch.save(model.state_dict(), "./model.json")
 
-# 0.58 -> 0.63 -> 0.71
+# 0.58 -> 0.63 -> 0.71 -> 0.85 -> 0.87

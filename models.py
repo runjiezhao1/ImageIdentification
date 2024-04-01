@@ -110,69 +110,109 @@ class ImprovedNet_Typ3(nn.Module):
         return x
     
 class ImprovedNet_Typ4(nn.Module):
-    def __init__(self):
+    def __init__(self, use_res = False):
         super(ImprovedNet_Typ4, self).__init__()
         self.pool = nn.MaxPool2d(2,2,padding=1)
 
         self.conv1 = nn.Conv2d(3,64,3,padding=1)
         self.conv2 = nn.Conv2d(64,64,3,padding=1)
         self.batch1 = nn.BatchNorm2d(64)
-        
+
+        if use_res:
+            self.convRes1 = nn.Conv2d(3,64,3,padding = 1)
+        else:
+            self.convRes1 = None    
+
         self.conv3 = nn.Conv2d(64,128,3,padding=1)
         self.conv4 = nn.Conv2d(128,128,3,padding=1)
         self.batch2 = nn.BatchNorm2d(128)
+
+        if use_res:
+            self.convRes2 = nn.Conv2d(64,128,3,padding = 1)    
+        else:
+            self.convRes2 = None
 
         self.conv5 = nn.Conv2d(128,128,3,padding=1)
         self.conv6 = nn.Conv2d(128,128,3,padding=1)
         self.conv7 = nn.Conv2d(128,128,1,padding=1)
         self.batch3 = nn.BatchNorm2d(128)
 
+        if use_res:
+            self.convRes3 = nn.Conv2d(128, 128, 3, padding = 1)   
+        else:
+            self.convRes3 = None  
+
         self.conv8 = nn.Conv2d(128,256,3,padding=1)
         self.conv9 = nn.Conv2d(256,256,3,padding=1)
         self.conv10 = nn.Conv2d(256,256,1,padding=1)
         self.batch4 = nn.BatchNorm2d(256)
+
+        if use_res:
+            self.convRes4 = nn.Conv2d(128, 256, 3, padding = 1) 
+        else:
+            self.convRes4 = None  
 
         self.conv11 = nn.Conv2d(256,512,3,padding=1)
         self.conv12 = nn.Conv2d(512,512,3,padding=1)
         self.conv13 = nn.Conv2d(512,512,1,padding=1)
         self.batch5 = nn.BatchNorm2d(512)
 
+        if use_res:
+            self.convRes5 = nn.Conv2d(256, 512, 3, padding = 1) 
+        else:
+            self.convRes5 = None
+
         self.fc1 = nn.Linear(512*4*4,1024)
         self.fc2 = nn.Linear(1024,1024)
         self.fc3 = nn.Linear(1024,10)
         self.drop1 = nn.Dropout(p=0.5)
     def forward(self, x):
+        tmp = x
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.pool(x)
         x = self.batch1(x)
+        if self.convRes1:
+            x = x + self.convRes1(tmp)
         x = F.relu(x)
 
+        tmp = x
         x = self.conv3(x)
         x = self.conv4(x)
         x = self.pool(x)
         x = self.batch2(x)
+        if self.convRes2:
+            x = x + self.convRes2(tmp)
         x = F.relu(x)
 
+        tmp = x
         x = self.conv5(x)
         x = self.conv6(x)
         x = self.conv7(x)
         x = self.pool(x)
         x = self.batch3(x)
+        if self.convRes3:
+            x = x + self.convRes3(tmp)
         x = F.relu(x)
 
+        tmp = x
         x = self.conv8(x)
         x = self.conv9(x)
         x = self.conv10(x)
         x = self.pool(x)
         x = self.batch4(x)
+        if self.convRes4:
+            x = x + self.convRes4(tmp)
         x = F.relu(x)
 
+        tmp = x
         x = self.conv11(x)
         x = self.conv12(x)
         x = self.conv13(x)
         x = self.pool(x)
         x = self.batch5(x)
+        if self.convRes5:
+            x = x + self.convRes5(tmp)
         x = F.relu(x)
 
         x = x.view(-1,512*4*4)
@@ -182,4 +222,140 @@ class ImprovedNet_Typ4(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.drop1(x)
         x = self.fc3(x)
+        return x
+
+class ImprovedNet_ResNet(nn.Module):
+    def __init__(self, use_res = False):
+        super(ImprovedNet_ResNet, self).__init__()
+        self.pool = nn.MaxPool2d(2,2,padding=1)
+
+        self.conv1 = nn.Conv2d(3,64,3,padding=1)
+        self.conv2 = nn.Conv2d(64,64,3,padding=1)
+        self.batch1 = nn.BatchNorm2d(64)
+
+        if use_res:
+            self.convRes1 = nn.Conv2d(3,64,3,padding = 1)
+        else:
+            self.convRes1 = None    
+
+        self.conv3 = nn.Conv2d(64,128,3,padding=1)
+        self.conv4 = nn.Conv2d(128,128,3,padding=1)
+        self.batch2 = nn.BatchNorm2d(128)
+
+        if use_res:
+            self.convRes2 = nn.Conv2d(64,128,3,padding = 1)    
+        else:
+            self.convRes2 = None
+
+        self.conv5 = nn.Conv2d(128,128,3,padding=1)
+        self.conv6 = nn.Conv2d(128,128,3,padding=1)
+        self.conv7 = nn.Conv2d(128,128,1,padding=1)
+        self.batch3 = nn.BatchNorm2d(128)
+
+        if use_res:
+            self.convRes3 = nn.Conv2d(128, 128, 1, padding = 1)   
+        else:
+            self.convRes3 = None  
+
+        self.conv8 = nn.Conv2d(128,256,3,padding=1)
+        self.conv9 = nn.Conv2d(256,256,3,padding=1)
+        self.conv10 = nn.Conv2d(256,256,1,padding=1)
+        self.batch4 = nn.BatchNorm2d(256)
+
+        if use_res:
+            self.convRes4 = nn.Conv2d(128, 256, 1, padding = 1) 
+        else:
+            self.convRes4 = None  
+
+        self.conv11 = nn.Conv2d(256,512,3,padding=1)
+        self.conv12 = nn.Conv2d(512,512,3,padding=1)
+        self.conv13 = nn.Conv2d(512,512,1,padding=1)
+        self.batch5 = nn.BatchNorm2d(512)
+
+        if use_res:
+            self.convRes5 = nn.Conv2d(256, 512, 1, padding = 1) 
+        else:
+            self.convRes5 = None
+
+        #self.fc1 = nn.Linear(512*4*4,1024)
+        self.fc1 = nn.Linear(512*7*7,1024)
+        self.fc2 = nn.Linear(1024,1024)
+        self.fc3 = nn.Linear(1024,10)
+        self.drop1 = nn.Dropout(p=0.5)
+    def forward(self, x):
+        tmp = x
+        x = self.conv1(x)
+        x = self.conv2(x)
+        #x = self.pool(x)
+        x = self.batch1(x)
+        if self.convRes1:
+            x = x + self.convRes1(tmp)
+        #x = self.pool(x)
+        x = F.relu(x)
+        #print('after step 1, x size')
+        #print(x.size())
+
+        tmp = x
+        x = self.conv3(x)
+        x = self.conv4(x)
+        #x = self.pool(x)
+        x = self.batch2(x)
+        if self.convRes2:
+            x = x + self.convRes2(tmp)
+        #x = self.pool(x)
+        x = F.relu(x)
+        #print('after step 2, x size')
+        #print(x.size())
+
+        tmp = x
+        x = self.conv5(x)
+        x = self.conv6(x)
+        x = self.conv7(x)
+        #x = self.pool(x)
+        x = self.batch3(x)
+        if self.convRes3:
+            x = x + self.convRes3(tmp)
+        x = self.pool(x)
+        x = F.relu(x)
+        #print('after step 3, x size')
+        #print(x.size())
+        
+
+        tmp = x
+        x = self.conv8(x)
+        x = self.conv9(x)
+        x = self.conv10(x)
+        #x = self.pool(x)
+        x = self.batch4(x)
+        if self.convRes4:
+            x = x + self.convRes4(tmp)
+        x = self.pool(x)
+        x = F.relu(x)
+        #print('after step 4, x size')
+        #print(x.size())
+
+        tmp = x
+        x = self.conv11(x)
+        x = self.conv12(x)
+        x = self.conv13(x)
+        #x = self.pool(x)
+        x = self.batch5(x)
+        if self.convRes5:
+            x = x + self.convRes5(tmp)
+        x = self.pool(x)
+        x = F.relu(x)
+        # print('after step 5, x size')
+        #print(x.size())
+
+        #x = x.view(-1,512*4*4)
+        x = x.view(-1,512*7*7)
+        #print('after view x size')
+        #print(x.size())
+        x = F.relu(self.fc1(x))
+        x = self.drop1(x)
+        x = F.relu(self.fc2(x))
+        x = self.drop1(x)
+        x = self.fc3(x)
+        #print('final out size') 
+        #print(x.size())
         return x
