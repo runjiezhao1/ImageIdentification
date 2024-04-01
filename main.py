@@ -128,6 +128,6 @@ plt.ylabel('Accuracy rate')
 plt.title('Accuracy rate vs. Epoch')
 plt.show()
 
-torch.save(model.state_dict(), "./model.json")
+torch.save(model.state_dict(), "./temp.json")
 
 # 0.58 -> 0.63 -> 0.71 -> 0.85 -> 0.87
